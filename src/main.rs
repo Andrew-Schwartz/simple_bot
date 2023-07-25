@@ -14,6 +14,9 @@ use log::LevelFilter;
 use crate::test_command::TestCommand;
 
 mod test_command;
+mod echo_button;
+mod menu_command;
+mod config;
 
 const DEV_CHANNEL: ChannelId = ChannelId(780240796690808912);
 
@@ -22,7 +25,7 @@ pub struct MyBot;
 #[discorsd::async_trait]
 impl Bot for MyBot {
     fn token(&self) -> String {
-        "NzgwMjM3MzE0NzM0Njg2MjA4.X7sKnw.FBAPbJirML0fJZjJJBhPWwGjXp4".into()
+        "NzgwMjM3MzE0NzM0Njg2MjA4.GTfO7_.pDC-G1q0wFjOj9T7PB12vOewuaUjF3I-kC3W8g".into()
     }
 
     fn global_commands() -> &'static [&'static dyn SlashCommandRaw<Bot=Self>] {

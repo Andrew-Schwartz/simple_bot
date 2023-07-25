@@ -2,12 +2,25 @@ use std::borrow::Cow;
 use std::fmt::Debug;
 use std::sync::Arc;
 
-use discorsd::{async_trait, BotState};
-use discorsd::commands::{ButtonCommand, ButtonPressData, InteractionUse, SlashCommand, SlashCommandData, Unused, Used};
+use command_data_derive::{CommandData, CommandDataChoices};
+use discorsd::BotState;
+use discorsd::commands::{InteractionUse, SlashCommand, SlashCommandData, Unused, Used};
 use discorsd::errors::BotError;
 use discorsd::model::interaction_response::message;
 
+use crate::echo_button::EchoButton;
 use crate::MyBot;
+
+#[derive(CommandDataChoices)]
+pub enum ComponentType {
+    Button,
+    StringMenu,
+}
+
+#[derive(CommandData)]
+pub struct Data {
+    component: ComponentType
+}
 
 #[derive(Debug, Clone)]
 pub struct TestCommand;
@@ -15,7 +28,7 @@ pub struct TestCommand;
 #[discorsd::async_trait]
 impl SlashCommand for TestCommand {
     type Bot = MyBot;
-    type Data = ();
+    type Data = Data;
     type Use = Used;
     const NAME: &'static str = "test";
 
@@ -27,36 +40,23 @@ impl SlashCommand for TestCommand {
         &self,
         state: Arc<BotState<<Self as SlashCommand>::Bot>>,
         interaction: InteractionUse<SlashCommandData, Unused>,
-        _data: Self::Data,
+        data: Self::Data,
     ) -> Result<InteractionUse<SlashCommandData, Self::Use>, BotError> {
-        interaction.respond(&state, message(|m| {
-            m.content("Response!");
-            m.embed(|e| {
-                e.title("Componenets??");
-            });
-            m.button(&state, MyButton)
-        })).await.map_err(|e| e.into())
-    }
-}
-
-#[derive(Clone, Debug)]
-struct MyButton;
-
-#[async_trait]
-impl ButtonCommand for MyButton {
-    type Bot = MyBot;
-
-    fn label(&self) -> String {
-        "Hi".into()
-    }
-
-    async fn run(
-        &self,
-        state: Arc<BotState<Self::Bot>>,
-        interaction: InteractionUse<ButtonPressData, Unused>
-    ) -> Result<InteractionUse<ButtonPressData, Used>, BotError> {
-        interaction.respond(state, "Button Pressed!")
-            .await
-            .map_err(|e| e.into())
+        match data.component {
+            ComponentType::Button => interaction.respond(&state, message(|m| {
+                m.content("Response!");
+                m.embed(|e| {
+                    e.title("Buddon??");
+                });
+                m.button(&state, EchoButton, |b| b.label("Echo!!"));
+            })).await.map_err(|e| e.into()),
+            ComponentType::StringMenu => interaction.respond(&state, message(|m| {
+                m.content("Response!");
+                m.embed(|e| {
+                    e.title("Menyu??");
+                });
+                // m.menu(&state, EchoButton, |b| b.label("Echo!!"));
+            })).await.map_err(|e| e.into()),
+        }
     }
 }
