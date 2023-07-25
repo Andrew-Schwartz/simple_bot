@@ -7,9 +7,9 @@ use discorsd::commands::SlashCommandRaw;
 use discorsd::errors::BotError;
 use discorsd::http::channel::{embed, MessageChannelExt};
 use discorsd::model::guild::Guild;
-use discorsd::model::ids::ChannelId;
 use discorsd::model::message::Color;
 use log::LevelFilter;
+use config::*;
 
 use crate::test_command::TestCommand;
 
@@ -18,14 +18,12 @@ mod echo_button;
 mod menu_command;
 mod config;
 
-const DEV_CHANNEL: ChannelId = ChannelId(780240796690808912);
-
 pub struct MyBot;
 
 #[discorsd::async_trait]
 impl Bot for MyBot {
     fn token(&self) -> String {
-        "NzgwMjM3MzE0NzM0Njg2MjA4.GTfO7_.pDC-G1q0wFjOj9T7PB12vOewuaUjF3I-kC3W8g".into()
+        TOKEN.into()
     }
 
     fn global_commands() -> &'static [&'static dyn SlashCommandRaw<Bot=Self>] {
@@ -33,7 +31,7 @@ impl Bot for MyBot {
     }
 
     async fn guild_create(&self, guild: Guild, state: Arc<BotState<Self>>) -> Result<(), BotError> {
-        guild.channels.get(DEV_CHANNEL).unwrap()
+        guild.channels.get(CHANNEL).unwrap()
             .send(state, embed(|e| {
                 e.title("Guild Joined!");
                 e.description(guild.name.unwrap_or_default());
