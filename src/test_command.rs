@@ -6,15 +6,18 @@ use command_data_derive::{CommandData, CommandDataChoices};
 use discorsd::BotState;
 use discorsd::commands::{InteractionUse, SlashCommand, SlashCommandData, Unused, Used};
 use discorsd::errors::BotError;
+use discorsd::model::channel::ChannelType;
 use discorsd::model::interaction_response::message;
 
 use crate::echo_button::EchoButton;
+use crate::menu_command::{MyChannelMenu, MyStringMenu};
 use crate::MyBot;
 
 #[derive(CommandDataChoices)]
 pub enum ComponentType {
     Button,
     StringMenu,
+    ChannelMenu,
 }
 
 #[derive(CommandData)]
@@ -53,9 +56,16 @@ impl SlashCommand for TestCommand {
             ComponentType::StringMenu => interaction.respond(&state, message(|m| {
                 m.content("Response!");
                 m.embed(|e| {
-                    e.title("Menyu??");
+                    e.title("🧵 Menyu??");
                 });
-                // m.menu(&state, EchoButton, |b| b.label("Echo!!"));
+                m.menu(&state, MyStringMenu, |_| { });
+            })).await.map_err(|e| e.into()),
+            ComponentType::ChannelMenu => interaction.respond(&state, message(|m| {
+                m.content("Response!");
+                m.embed(|e| {
+                    e.title("Chennl Menyu??");
+                });
+                m.menu(&state, MyChannelMenu, |m| { m.channel_types(vec![ChannelType::Category]) });
             })).await.map_err(|e| e.into()),
         }
     }

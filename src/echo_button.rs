@@ -1,19 +1,11 @@
 use std::sync::Arc;
 
 use discorsd::{async_trait, BotState};
-use discorsd::commands::{ButtonCommand, ButtonPressData, InteractionUse, Unused, Used};
+use discorsd::commands::{ButtonCommand, InteractionUse, Unused, Used};
 use discorsd::errors::BotError;
+use discorsd::model::new_interaction::ButtonPressData;
 
 use crate::MyBot;
-
-pub async fn echo(
-    state: Arc<BotState<MyBot>>,
-    interaction: InteractionUse<ButtonPressData, Unused>,
-) -> Result<InteractionUse<ButtonPressData, Used>, BotError> {
-    interaction.respond(state, "Button Pressed!")
-        .await
-        .map_err(|e| e.into())
-}
 
 #[derive(Clone, Debug)]
 pub struct EchoButton;
@@ -27,6 +19,8 @@ impl ButtonCommand for EchoButton {
         state: Arc<BotState<Self::Bot>>,
         interaction: InteractionUse<ButtonPressData, Unused>,
     ) -> Result<InteractionUse<ButtonPressData, Used>, BotError> {
-        echo(state, interaction).await
+        interaction.respond(state, "Button Pressed!")
+            .await
+            .map_err(|e| e.into())
     }
 }
