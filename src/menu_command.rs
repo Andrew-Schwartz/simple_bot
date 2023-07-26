@@ -4,7 +4,6 @@ use command_data_derive::MenuCommand;
 use discorsd::BotState;
 use discorsd::commands::{InteractionUse, MenuCommand, Unused, Used};
 use discorsd::errors::BotError;
-use discorsd::http::channel::embed;
 use discorsd::model::channel::ChannelMarkupExt;
 use discorsd::model::components::ComponentId;
 use discorsd::model::ids::ChannelId;
@@ -55,12 +54,10 @@ impl MenuCommand for MyChannelMenu {
         interaction: InteractionUse<ComponentId, Unused>,
         data: Vec<Self::Data>,
     ) -> Result<InteractionUse<ComponentId, Used>, BotError> {
-        interaction.respond(state, embed(|e| {
-            e.fields(
-                data.into_iter()
-                    .enumerate()
-                    .map(|(i, id)| (format!("Channel {i}"), id.mention()))
-            )
-        })).await.map_err(|e| e.into())
+        let message: String = data.into_iter()
+            .enumerate()
+            .map(|(i, id)| format!("Channel {i}: {}\n", id.mention()))
+            .collect();
+        interaction.respond(state, message).await.map_err(|e| e.into())
     }
 }

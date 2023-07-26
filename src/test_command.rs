@@ -22,7 +22,7 @@ pub enum ComponentType {
 
 #[derive(CommandData)]
 pub struct Data {
-    component: ComponentType
+    component: ComponentType,
 }
 
 #[derive(Debug, Clone)]
@@ -58,14 +58,17 @@ impl SlashCommand for TestCommand {
                 m.embed(|e| {
                     e.title("🧵 Menyu??");
                 });
-                m.menu(&state, MyStringMenu, |_| { });
+                m.menu(&state, MyStringMenu, |m| { m.max_values(2) });
             })).await.map_err(|e| e.into()),
             ComponentType::ChannelMenu => interaction.respond(&state, message(|m| {
                 m.content("Response!");
                 m.embed(|e| {
                     e.title("Chennl Menyu??");
                 });
-                m.menu(&state, MyChannelMenu, |m| { m.channel_types(vec![ChannelType::Category]) });
+                m.menu(&state, MyChannelMenu, |m| {
+                    m.channel_types(vec![ChannelType::Text]);
+                    m.max_values(4)
+                });
             })).await.map_err(|e| e.into()),
         }
     }
