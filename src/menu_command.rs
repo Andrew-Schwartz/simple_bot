@@ -4,9 +4,9 @@ use command_data_derive::MenuCommand;
 use discorsd::BotState;
 use discorsd::commands::{InteractionUse, MenuCommand, Unused, Used};
 use discorsd::errors::BotError;
-use discorsd::model::channel::ChannelMarkupExt;
-use discorsd::model::components::ComponentId;
-use discorsd::model::ids::ChannelId;
+use discorsd::model::user::UserMarkupExt;
+use discorsd::model::ids::UserId;
+use discorsd::model::new_interaction::MenuSelectData;
 
 use crate::MyBot;
 
@@ -30,9 +30,10 @@ impl MenuCommand for MyStringMenu {
     async fn run(
         &self,
         state: Arc<BotState<Self::Bot>>,
-        interaction: InteractionUse<ComponentId, Unused>,
+        interaction: InteractionUse<MenuSelectData, Unused>,
         data: Vec<Self::Data>,
-    ) -> Result<InteractionUse<ComponentId, Used>, BotError> {
+    ) -> Result<InteractionUse<MenuSelectData, Used>, BotError> {
+        println!("interaction.data.resolved = {:#?}", interaction.data.resolved);
         let str: String = data.into_iter()
             .map(|d| d.to_string())
             .collect();
@@ -41,22 +42,23 @@ impl MenuCommand for MyStringMenu {
 }
 
 #[derive(Clone, Debug)]
-pub struct MyChannelMenu;
+pub struct MyUserMenu;
 
 #[discorsd::async_trait]
-impl MenuCommand for MyChannelMenu {
+impl MenuCommand for MyUserMenu {
     type Bot = MyBot;
-    type Data = ChannelId;
+    type Data = UserId;
 
     async fn run(
         &self,
         state: Arc<BotState<Self::Bot>>,
-        interaction: InteractionUse<ComponentId, Unused>,
+        interaction: InteractionUse<MenuSelectData, Unused>,
         data: Vec<Self::Data>,
-    ) -> Result<InteractionUse<ComponentId, Used>, BotError> {
+    ) -> Result<InteractionUse<MenuSelectData, Used>, BotError> {
+        println!("interaction.data.resolved = {:#?}", interaction.data.resolved);
         let message: String = data.into_iter()
             .enumerate()
-            .map(|(i, id)| format!("Channel {i}: {}\n", id.mention()))
+            .map(|(i, id)| format!("Channel {i}: {}\n", id.ping()))
             .collect();
         interaction.respond(state, message).await.map_err(|e| e.into())
     }

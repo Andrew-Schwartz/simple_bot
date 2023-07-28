@@ -10,14 +10,14 @@ use discorsd::model::channel::ChannelType;
 use discorsd::model::interaction_response::message;
 
 use crate::echo_button::EchoButton;
-use crate::menu_command::{MyChannelMenu, MyStringMenu};
+use crate::menu_command::{MyUserMenu, MyStringMenu};
 use crate::MyBot;
 
 #[derive(CommandDataChoices)]
 pub enum ComponentType {
     Button,
     StringMenu,
-    ChannelMenu,
+    UserMenu,
 }
 
 #[derive(CommandData)]
@@ -60,14 +60,14 @@ impl SlashCommand for TestCommand {
                 });
                 m.menu(&state, MyStringMenu, |m| { m.max_values(2) });
             })).await.map_err(|e| e.into()),
-            ComponentType::ChannelMenu => interaction.respond(&state, message(|m| {
+            ComponentType::UserMenu => interaction.respond(&state, message(|m| {
                 m.content("Response!");
                 m.embed(|e| {
-                    e.title("Chennl Menyu??");
+                    e.title("Yusr Menyu??");
                 });
-                m.menu(&state, MyChannelMenu, |m| {
-                    m.channel_types(vec![ChannelType::Text]);
-                    m.max_values(4)
+                m.menu(&state, MyUserMenu, |m| {
+                    m.max_values(4);
+                    m.placeholder("User!!!!")
                 });
             })).await.map_err(|e| e.into()),
         }
