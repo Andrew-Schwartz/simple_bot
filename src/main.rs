@@ -3,7 +3,7 @@ use std::sync::Arc;
 use chrono::Local;
 
 use discorsd::{Bot, BotExt, BotState};
-use discorsd::commands::SlashCommandRaw;
+use discorsd::commands::{SlashCommandRaw, UserCommand};
 use discorsd::errors::BotError;
 use discorsd::http::channel::{embed, MessageChannelExt};
 use discorsd::model::guild::Guild;
@@ -12,11 +12,13 @@ use log::LevelFilter;
 use config::*;
 
 use crate::test_command::TestCommand;
+use crate::test_user_command::TestUserCommand;
 
 mod test_command;
 mod echo_button;
 mod menu_command;
 mod config;
+mod test_user_command;
 
 pub struct MyBot;
 
@@ -28,6 +30,10 @@ impl Bot for MyBot {
 
     fn global_commands() -> &'static [&'static dyn SlashCommandRaw<Bot=Self>] {
         &[&TestCommand]
+    }
+
+    fn global_user_commands() -> &'static [&'static dyn UserCommand<Bot=Self>] {
+        &[&TestUserCommand]
     }
 
     async fn guild_create(&self, guild: Guild, state: Arc<BotState<Self>>) -> Result<(), BotError> {

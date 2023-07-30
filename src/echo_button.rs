@@ -3,7 +3,7 @@ use std::sync::Arc;
 use discorsd::{async_trait, BotState};
 use discorsd::commands::{ButtonCommand, InteractionUse, Unused, Used};
 use discorsd::errors::BotError;
-use discorsd::model::new_interaction::ButtonPressData;
+use discorsd::model::interaction::ButtonPressData;
 
 use crate::MyBot;
 

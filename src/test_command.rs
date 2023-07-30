@@ -4,9 +4,8 @@ use std::sync::Arc;
 
 use command_data_derive::{CommandData, CommandDataChoices};
 use discorsd::BotState;
-use discorsd::commands::{InteractionUse, SlashCommand, SlashCommandData, Unused, Used};
+use discorsd::commands::{InteractionUse, SlashCommand, AppCommandData, Unused, Used};
 use discorsd::errors::BotError;
-use discorsd::model::channel::ChannelType;
 use discorsd::model::interaction_response::message;
 
 use crate::echo_button::EchoButton;
@@ -42,9 +41,9 @@ impl SlashCommand for TestCommand {
     async fn run(
         &self,
         state: Arc<BotState<<Self as SlashCommand>::Bot>>,
-        interaction: InteractionUse<SlashCommandData, Unused>,
+        interaction: InteractionUse<AppCommandData, Unused>,
         data: Self::Data,
-    ) -> Result<InteractionUse<SlashCommandData, Self::Use>, BotError> {
+    ) -> Result<InteractionUse<AppCommandData, Self::Use>, BotError> {
         match data.component {
             ComponentType::Button => interaction.respond(&state, message(|m| {
                 m.content("Response!");

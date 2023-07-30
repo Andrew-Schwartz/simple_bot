@@ -6,7 +6,7 @@ use discorsd::commands::{InteractionUse, MenuCommand, Unused, Used};
 use discorsd::errors::BotError;
 use discorsd::model::user::UserMarkup;
 use discorsd::model::ids::UserId;
-use discorsd::model::new_interaction::MenuSelectData;
+use discorsd::model::interaction::MenuSelectData;
 
 use crate::MyBot;
 
