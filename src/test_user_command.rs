@@ -16,8 +16,6 @@ pub struct TestUserCommand;
 impl UserCommand for TestUserCommand {
     type Bot = MyBot;
 
-    // todo update this?
-    //const NAME: &'static str = "Test User";
     fn name(&self) -> &'static str {
         "Test User"
     }
@@ -29,9 +27,13 @@ impl UserCommand for TestUserCommand {
         target: User,
         guild_member: Option<PartialGuildMember>
     ) -> Result<InteractionUse<AppCommandData, Used>, BotError> {
-        let mut guild_message = "";
+        let guild_message: &str;
+        // todo fix string quotation formatting
         if let Some(_gm) = guild_member {
             guild_message = " has guild info";
+        }
+        else {
+            guild_message = "";
         }
         interaction.respond(state, format!("User {:?}{:?}", target.username, guild_message))
             .await
