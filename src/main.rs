@@ -11,13 +11,16 @@ use discorsd::model::message::Color;
 use log::LevelFilter;
 use config::*;
 
-use crate::test_command::TestCommand;
+// use crate::test_command::TestCommand;
+use crate::test_modal_command::TestModalCommand;
 use crate::test_user_command::TestUserCommand;
 use crate::test_message_command::TestMessageCommand;
 
-mod test_command;
+// mod test_command;
+mod test_modal_command;
 mod echo_button;
 mod menu_command;
+mod modal_command;
 mod config;
 mod test_user_command;
 mod test_message_command;
@@ -30,9 +33,7 @@ impl Bot for MyBot {
         TOKEN.into()
     }
 
-    fn global_commands() -> &'static [&'static dyn SlashCommandRaw<Bot=Self>] {
-        &[&TestCommand]
-    }
+    fn global_commands() -> &'static [&'static dyn SlashCommandRaw<Bot=Self>] { &[&TestModalCommand] }
 
     fn global_user_commands() -> &'static [&'static dyn UserCommand<Bot=Self>] { &[&TestUserCommand] }
 
