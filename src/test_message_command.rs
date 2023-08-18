@@ -4,7 +4,6 @@ use std::sync::Arc;
 use discorsd::BotState;
 use discorsd::commands::{InteractionUse, MessageCommand, AppCommandData, Unused, Used};
 use discorsd::errors::BotError;
-use discorsd::model::interaction::PartialGuildMember;
 use discorsd::model::message::Message;
 
 use crate::MyBot;

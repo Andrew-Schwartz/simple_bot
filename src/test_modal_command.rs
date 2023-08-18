@@ -4,13 +4,13 @@ use std::sync::Arc;
 
 use command_data_derive::{CommandData, CommandDataChoices};
 use discorsd::BotState;
-use discorsd::commands::{InteractionUse, SlashCommand, AppCommandData, Unused, Used};
+use discorsd::commands::{AppCommandData, InteractionUse, SlashCommand, Unused, Used};
 use discorsd::errors::BotError;
 use discorsd::model::components::{TextInput, TextInputStyle};
-use discorsd::model::interaction_response::{message, modal, Modal};
+use discorsd::model::interaction_response::{message, modal2, ModalBuilder};
 
 use crate::echo_button::EchoButton;
-use crate::menu_command::{MyUserMenu, MyStringMenu};
+use crate::menu_command::{MyStringMenu, MyUserMenu};
 use crate::modal_command::MyModal;
 use crate::MyBot;
 
@@ -19,7 +19,7 @@ pub enum ComponentType {
     Button,
     StringMenu,
     UserMenu,
-    Modal
+    Modal,
 }
 
 #[derive(CommandData)]
@@ -72,17 +72,21 @@ impl SlashCommand for TestModalCommand {
                     m.placeholder("User!!!!")
                 });
             })).await.map_err(|e| e.into()),
-            ComponentType::Modal => interaction.respond_modal(&state, modal(&state, MyModal, |m| {
-                m.title("Modal!!!");
-                m.text_input(&state, |t| {
-                    t.label("Input 1");
-                    t.style(TextInputStyle::Short);
-                });
-                m.text_input(&state, |t| {
-                    t.label("Input 2");
-                    t.style(TextInputStyle::Paragraph);
-                });
-            })).await.map_err(|e| e.into()),
+            ComponentType::Modal => interaction.respond_modal(
+                &state,
+                modal2(
+                    &state,
+                    MyModal,
+                    ModalBuilder::with_inputs(
+                        "Modal!!!",
+                        [
+                            TextInput::new("Input 1", TextInputStyle::Short).optional(),
+                            TextInput::new("Input 2", TextInputStyle::Paragraph),
+                            // TextInput::new("Input 3", TextInputStyle::Short),
+                        ]
+                    )
+                )
+            ).await.map_err(|e| e.into()),
         }
     }
 }

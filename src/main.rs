@@ -40,6 +40,7 @@ impl Bot for MyBot {
     fn global_message_commands() -> &'static [&'static dyn MessageCommand<Bot=Self>] { &[&TestMessageCommand] }
 
     async fn guild_create(&self, guild: Guild, state: Arc<BotState<Self>>) -> Result<(), BotError> {
+        if guild.id != GUILD { return Ok(()) }
         guild.channels.get(CHANNEL).unwrap()
             .send(state, embed(|e| {
                 e.title("Guild Joined!");
