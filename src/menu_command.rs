@@ -3,12 +3,11 @@ use std::sync::Arc;
 use command_data_derive::MenuCommand;
 use discorsd::BotState;
 use discorsd::commands::{InteractionUse, MenuCommand, Unused, Used};
-use discorsd::errors::BotError;
 use discorsd::model::user::UserMarkup;
 use discorsd::model::ids::UserId;
 use discorsd::model::interaction::MenuSelectData;
 
-use crate::MyBot;
+use crate::{MyBot, BotError};
 
 #[derive(MenuCommand)]
 pub enum MyChoices {

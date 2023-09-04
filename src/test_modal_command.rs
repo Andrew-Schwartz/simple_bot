@@ -5,13 +5,12 @@ use std::sync::Arc;
 use command_data_derive::{CommandData, CommandDataChoices};
 use discorsd::BotState;
 use discorsd::commands::{AppCommandData, InteractionUse, ModalCommand, SlashCommand, Unused, Used};
-use discorsd::errors::BotError;
 use discorsd::model::interaction_response::{message, modal};
 
 use crate::echo_button::EchoButton;
 use crate::menu_command::{MyStringMenu, MyUserMenu};
 use crate::modal_command::MyModal;
-use crate::MyBot;
+use crate::{MyBot, BotError};
 
 #[derive(CommandDataChoices)]
 pub enum ComponentType {

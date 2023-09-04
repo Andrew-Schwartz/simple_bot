@@ -3,26 +3,22 @@
     clippy::wildcard_imports
 )]
 
-use std::io::Write;
+use std::error::Error;
+use std::fmt::{Debug, Display, Formatter};
 use std::sync::Arc;
 
-use chrono::Local;
 use discorsd::{Bot, BotExt, BotState};
 use discorsd::commands::{MessageCommand, SlashCommandRaw, UserCommand};
-use discorsd::errors::BotError;
 use discorsd::http::channel::{embed, MessageChannelExt};
 use discorsd::model::guild::Guild;
 use discorsd::model::message::Color;
-use log::LevelFilter;
 
 use config::*;
 
 use crate::test_message_command::TestMessageCommand;
-// use crate::test_command::TestCommand;
 use crate::test_modal_command::TestModalCommand;
 use crate::test_user_command::TestUserCommand;
 
-// mod test_command;
 mod test_modal_command;
 mod echo_button;
 mod menu_command;
@@ -32,9 +28,28 @@ mod test_user_command;
 mod test_message_command;
 
 pub struct MyBot;
+pub struct MyError;
+
+impl Debug for MyError {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        write!(f, "MyError")
+    }
+}
+
+impl Display for MyError {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        write!(f, "MyError")
+    }
+}
+
+impl Error for MyError {}
+
+pub type BotError = discorsd::errors::BotError<MyError>;
 
 #[discorsd::async_trait]
 impl Bot for MyBot {
+    type Error = MyError;
+
     fn token(&self) -> String {
         TOKEN.into()
     }
@@ -61,16 +76,5 @@ impl Bot for MyBot {
 
 #[tokio::main]
 async fn main() {
-    env_logger::builder()
-        .format(|f, record|
-            writeln!(f,
-                     "{} [{}] {}",
-                     Local::now().format("%e %T"),
-                     record.level(),
-                     record.args(),
-            ))
-        .filter(None, LevelFilter::Info)
-        .init();
-
     MyBot.run().await.unwrap();
 }

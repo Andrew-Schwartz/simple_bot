@@ -4,11 +4,10 @@ use command_data_derive::Modal;
 
 use discorsd::{async_trait, BotState};
 use discorsd::commands::modal_command::*;
-use discorsd::errors::BotError;
 use discorsd::model::components::ComponentId;
 use discorsd::model::message::TextMarkup;
 
-use crate::MyBot;
+use crate::{MyBot, BotError};
 
 #[derive(Clone, Debug)]
 pub struct MyModal;

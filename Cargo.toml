@@ -6,7 +6,5 @@ edition = "2021"
 [dependencies]
 discorsd = { path = "../discorsd/discorsd" }
 command_data_derive = { path = "../discorsd/command_data_derive" }
-tokio = { version = "1.28.2", features=["macros"] }
-log = "0.4.14"
-env_logger = "0.10.0"
-chrono = "0.4.26"
+tokio = { version = "1.29.0", features=["macros"] }
+chrono = "0.4.28"

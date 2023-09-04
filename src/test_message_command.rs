@@ -3,10 +3,9 @@ use std::sync::Arc;
 
 use discorsd::BotState;
 use discorsd::commands::{InteractionUse, MessageCommand, AppCommandData, Unused, Used};
-use discorsd::errors::BotError;
 use discorsd::model::message::Message;
 
-use crate::MyBot;
+use crate::{MyBot, BotError};
 
 #[derive(Debug, Clone)]
 pub struct TestMessageCommand;

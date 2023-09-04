@@ -2,10 +2,9 @@ use std::sync::Arc;
 
 use discorsd::{async_trait, BotState};
 use discorsd::commands::{ButtonCommand, InteractionUse, Unused, Used};
-use discorsd::errors::BotError;
 use discorsd::model::interaction::ButtonPressData;
 
-use crate::MyBot;
+use crate::{MyBot, BotError};
 
 #[derive(Clone, Debug)]
 pub struct EchoButton;
