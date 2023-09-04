@@ -21,6 +21,6 @@ impl ButtonCommand for EchoButton {
     ) -> Result<InteractionUse<ButtonPressData, Used>, BotError> {
         interaction.respond(state, "Button Pressed!")
             .await
-            .map_err(|e| e.into())
+            .map_err(Into::into)
     }
 }

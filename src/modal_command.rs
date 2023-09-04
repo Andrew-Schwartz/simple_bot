@@ -1,6 +1,8 @@
+use std::fmt::{Display, Formatter};
 use std::sync::Arc;
+use command_data_derive::Modal;
 
-use discorsd::{async_trait, BotState, modal_values};
+use discorsd::{async_trait, BotState};
 use discorsd::commands::modal_command::*;
 use discorsd::errors::BotError;
 use discorsd::model::components::ComponentId;
@@ -11,17 +13,39 @@ use crate::MyBot;
 #[derive(Clone, Debug)]
 pub struct MyModal;
 
-pub struct Data(String);
+#[derive(Modal)]
+pub struct NewUser {
+    favorite_color: String,
+    favorite_number: i64,
+    #[modal(long)]
+    bio: String,
+    #[modal(long)]
+    feedback: Option<String>,
+    least_fav_number: Option<i64>,
+}
 
-// todo is having this macro actually better?
-modal_values!(Data => 1; vec; {
-    Ok(Self(vec.remove(0)))
-});
+impl Display for NewUser {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        write!(f,
+               "color: {}\nnumber: {}\n{}",
+               self.favorite_color.code_inline(),
+               self.favorite_number.code_inline(),
+               self.bio.code_block(""),
+        )?;
+        if let Some(feedback) = &self.feedback {
+            write!(f, "feedback: {}", feedback.code_block(""))?;
+        }
+        if let Some(least_fav_number) = &self.least_fav_number {
+            write!(f, ":( num: {}", least_fav_number.code_inline())?;
+        }
+        Ok(())
+    }
+}
 
 #[async_trait]
 impl ModalCommand for MyModal {
     type Bot = MyBot;
-    type Values = [String; 2];
+    type Values = NewUser;
 
     async fn run(
         &self,
@@ -29,9 +53,9 @@ impl ModalCommand for MyModal {
         interaction: InteractionUse<ComponentId, Unused>,
         values: Self::Values,
     ) -> Result<InteractionUse<ComponentId, Used>, BotError> {
-        let values = values.into_iter().map(|s| s.code_block("rs")).collect::<String>();
+        // let values = values.into_iter().map(|s| s.code_block("rs")).collect::<String>();
         interaction.respond(state, format!("Modal Submitted! Values:\n{values}"))
             .await
-            .map_err(|e| e.into())
+            .map_err(Into::into)
     }
 }

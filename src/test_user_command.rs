@@ -37,6 +37,6 @@ impl UserCommand for TestUserCommand {
         }
         interaction.respond(state, format!("User {:?}{:?}", target.username, guild_message))
             .await
-            .map_err(|e| e.into())
+            .map_err(Into::into)
     }
 }

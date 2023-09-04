@@ -27,6 +27,6 @@ impl MessageCommand for TestMessageCommand {
     ) -> Result<InteractionUse<AppCommandData, Used>, BotError> {
         interaction.respond(state, format!("Message by {:?}", target.author.username))
             .await
-            .map_err(|e| e.into())
+            .map_err(Into::into)
     }
 }

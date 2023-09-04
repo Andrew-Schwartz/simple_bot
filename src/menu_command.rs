@@ -37,7 +37,7 @@ impl MenuCommand for MyStringMenu {
         let str: String = data.into_iter()
             .map(|d| d.to_string())
             .collect();
-        interaction.respond(&state, str).await.map_err(|e| e.into())
+        interaction.respond(&state, str).await.map_err(Into::into)
     }
 }
 
@@ -60,6 +60,6 @@ impl MenuCommand for MyUserMenu {
             .enumerate()
             .map(|(i, id)| format!("Channel {i}: {}\n", id.ping()))
             .collect();
-        interaction.respond(state, message).await.map_err(|e| e.into())
+        interaction.respond(state, message).await.map_err(Into::into)
     }
 }

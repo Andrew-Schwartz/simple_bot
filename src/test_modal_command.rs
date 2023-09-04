@@ -4,10 +4,9 @@ use std::sync::Arc;
 
 use command_data_derive::{CommandData, CommandDataChoices};
 use discorsd::BotState;
-use discorsd::commands::{AppCommandData, InteractionUse, SlashCommand, Unused, Used};
+use discorsd::commands::{AppCommandData, InteractionUse, ModalCommand, SlashCommand, Unused, Used};
 use discorsd::errors::BotError;
-use discorsd::model::components::{TextInput, TextInputStyle};
-use discorsd::model::interaction_response::{message, modal2, ModalBuilder};
+use discorsd::model::interaction_response::{message, modal};
 
 use crate::echo_button::EchoButton;
 use crate::menu_command::{MyStringMenu, MyUserMenu};
@@ -54,14 +53,14 @@ impl SlashCommand for TestModalCommand {
                     e.title("Buddon??");
                 });
                 m.button(&state, EchoButton, |b| b.label("Echo!!"));
-            })).await.map_err(|e| e.into()),
+            })).await.map_err(Into::into),
             ComponentType::StringMenu => interaction.respond(&state, message(|m| {
                 m.content("Response!");
                 m.embed(|e| {
                     e.title("🧵 Menyu??");
                 });
                 m.menu(&state, MyStringMenu, |m| { m.max_values(2) });
-            })).await.map_err(|e| e.into()),
+            })).await.map_err(Into::into),
             ComponentType::UserMenu => interaction.respond(&state, message(|m| {
                 m.content("Response!");
                 m.embed(|e| {
@@ -69,24 +68,17 @@ impl SlashCommand for TestModalCommand {
                 });
                 m.menu(&state, MyUserMenu, |m| {
                     m.max_values(4);
-                    m.placeholder("User!!!!")
+                    m.placeholder("User!!!!");
                 });
-            })).await.map_err(|e| e.into()),
+            })).await.map_err(Into::into),
             ComponentType::Modal => interaction.respond_modal(
                 &state,
-                modal2(
+                modal(
                     &state,
                     MyModal,
-                    ModalBuilder::with_inputs(
-                        "Modal!!!",
-                        [
-                            TextInput::new("Input 1", TextInputStyle::Short).optional(),
-                            TextInput::new("Input 2", TextInputStyle::Paragraph),
-                            // TextInput::new("Input 3", TextInputStyle::Short),
-                        ]
-                    )
+                    <MyModal as ModalCommand>::Values::builder(),
                 )
-            ).await.map_err(|e| e.into()),
+            ).await.map_err(Into::into),
         }
     }
 }

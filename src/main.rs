@@ -1,20 +1,26 @@
+#![warn(clippy::pedantic)]
+#![allow(
+    clippy::wildcard_imports
+)]
+
 use std::io::Write;
 use std::sync::Arc;
-use chrono::Local;
 
+use chrono::Local;
 use discorsd::{Bot, BotExt, BotState};
-use discorsd::commands::{SlashCommandRaw, UserCommand, MessageCommand};
+use discorsd::commands::{MessageCommand, SlashCommandRaw, UserCommand};
 use discorsd::errors::BotError;
 use discorsd::http::channel::{embed, MessageChannelExt};
 use discorsd::model::guild::Guild;
 use discorsd::model::message::Color;
 use log::LevelFilter;
+
 use config::*;
 
+use crate::test_message_command::TestMessageCommand;
 // use crate::test_command::TestCommand;
 use crate::test_modal_command::TestModalCommand;
 use crate::test_user_command::TestUserCommand;
-use crate::test_message_command::TestMessageCommand;
 
 // mod test_command;
 mod test_modal_command;
@@ -40,7 +46,7 @@ impl Bot for MyBot {
     fn global_message_commands() -> &'static [&'static dyn MessageCommand<Bot=Self>] { &[&TestMessageCommand] }
 
     async fn guild_create(&self, guild: Guild, state: Arc<BotState<Self>>) -> Result<(), BotError> {
-        if guild.id != GUILD { return Ok(()) }
+        if guild.id != GUILD { return Ok(()); }
         guild.channels.get(CHANNEL).unwrap()
             .send(state, embed(|e| {
                 e.title("Guild Joined!");
@@ -66,5 +72,5 @@ async fn main() {
         .filter(None, LevelFilter::Info)
         .init();
 
-    MyBot.run().await.unwrap()
+    MyBot.run().await.unwrap();
 }
